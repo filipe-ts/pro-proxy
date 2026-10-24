@@ -164,4 +164,25 @@ The test suite validates:
 1. **Authentication Boundary**: Unauthenticated requests to `/` and `/html/pages/messages` redirect (`302`) to `/login`, and API requests return `401 Unauthorized`.
 2. **Security Whitelist**: Blocked routes (`/v1/control`, `/v1/library`, `/v1/looks`) return `403 Forbidden`.
 3. **Standby Resilience**: Standby page renders properly when the ProPresenter port is unreachable.
-4. **End-to-End Message Submission**: Submits the two-token template message (`Responsável` + `Criança`) through the authenticated proxy to ProPresenter 7, verifies `204 No Content`, and clears it afterwards.
+4. **End-to-End Message Submission**: Discovers the network-visible template message, dynamically populates all defined tokens (e.g., `Responsável` + `Criança`), submits them through the authenticated proxy to ProPresenter 7, verifies `204 No Content`, and clears it afterwards.
+
+---
+
+## 6. Configuring Messages in ProPresenter 7
+
+For messages to be accessible via the web interface (`/html/pages/messages`) and the integration test suite, they must be explicitly exposed in ProPresenter 7:
+
+1. **Open Messages**: In ProPresenter, go to **View &rarr; Messages** (or press `Control + M`, or click the Messages icon in the toolbar).
+2. **Create or Select a Message**: Click the **`+`** button to create a new message (e.g., named `Parent Pickup` or `Berçário`).
+3. **Set the Message Template**: Type the message body using tokens in curly braces, for example:
+   ```text
+   {Guardian}, please come to the Nursery for {Child}.
+   ```
+   *(In Portuguese: `{Responsável} , responsável por {Criança}, favor comparecer ao Berçário.`)*
+4. **Define Tokens**: Click the token button in the editor and add text tokens matching the names in your template:
+   - Token 1: `Guardian` (or `Responsável`)
+   - Token 2: `Child` (or `Criança`)
+5. **Assign a Theme**: Choose an active theme with a text element (e.g., `Alerts` / `Alerta`).
+6. **Enable Web Exposure (Crucial)**: Check the box labeled **"Allow Web Notifications"** (in Portuguese: **"Permitir Notificações Web"**).
+   > *ProPresenter only exposes messages to `/html/pages/messages` and `/v1/messages` if this checkbox is enabled.*
+7. **Network Verification**: In ProPresenter's **Settings &rarr; Network**, ensure **"Enable Network"** is active on port `1025`.
