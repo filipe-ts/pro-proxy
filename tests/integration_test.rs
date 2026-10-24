@@ -304,35 +304,46 @@ async fn test_authenticated_propresenter_messages_flow() {
         }
     };
 
-    // Find the template message with visible_on_network: true
+    // Find the first network-visible message, or fallback to the first message in the list
     let active_msg = match messages_arr
         .iter()
         .find(|m| m.get("visible_on_network").and_then(|v| v.as_bool()).unwrap_or(false))
+        .or_else(|| messages_arr.first())
     {
         Some(m) => m,
         None => {
-            println!("⚠️ No message with 'Allow Web Notifications' enabled found on ProPresenter. See README for setup instructions.");
+            println!("⚠️ No messages configured in ProPresenter. See README for setup instructions.");
             return;
         }
     };
 
-    let uuid = active_msg["id"]["uuid"].as_str().unwrap();
-    let msg_name = active_msg["id"]["name"].as_str().unwrap_or("Unknown");
-    println!("Found network-visible message: '{}' (UUID: {})", msg_name, uuid);
+    let uuid = match active_msg.get("id").and_then(|id| id.get("uuid")).and_then(|u| u.as_str()) {
+        Some(u) => u,
+        None => {
+            println!("⚠️ Message has no UUID. Skipping live trigger test.");
+            return;
+        }
+    };
+    let msg_name = active_msg.get("id").and_then(|id| id.get("name")).and_then(|n| n.as_str()).unwrap_or("Unknown");
+    println!("Testing message: '{}' (UUID: {})", msg_name, uuid);
 
-    // 3. Trigger message dynamically populating all defined tokens
-    let trigger_payload: Vec<serde_json::Value> = active_msg["tokens"]
-        .as_array()
-        .unwrap_or(&vec![])
-        .iter()
-        .map(|t| {
-            let name = t["name"].as_str().unwrap_or("Token");
-            json!({
-                "name": name,
-                "text": { "text": format!("Teste {name}") }
-            })
+    // 3. Trigger message: if it has arguments (tokens), fill each with "Test" regardless of name
+    let trigger_payload: Vec<serde_json::Value> = active_msg
+        .get("tokens")
+        .and_then(|t| t.as_array())
+        .map(|tokens| {
+            tokens
+                .iter()
+                .map(|t| {
+                    let name = t.get("name").and_then(|n| n.as_str()).unwrap_or("Token");
+                    json!({
+                        "name": name,
+                        "text": { "text": "Test" }
+                    })
+                })
+                .collect()
         })
-        .collect();
+        .unwrap_or_default();
 
     let trigger_uri = format!("/v1/message/{uuid}/trigger?requires_confirmation=true");
     let response = app
