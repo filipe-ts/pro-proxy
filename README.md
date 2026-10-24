@@ -1,9 +1,14 @@
-# pro-proxy
+# ProProxy
 
-**pro-proxy** is an ultra-lightweight, standalone macOS application written in Rust. It securely exposes ProPresenter 7's native Web Messages interface (`http://127.0.0.1:1025/html/pages/messages`) to authorized users over the internet via **Cloudflare Tunnel (`cloudflared`)**, enforced by strict route whitelisting and **Argon2id** cryptographic authentication.
+### Authenticated Reverse Proxy & Cloudflare Tunnel for ProPresenter 7
+
+**ProProxy** (`pro-proxy`) is an ultra-lightweight, standalone macOS application written in Rust. It securely exposes ProPresenter 7's native Web Messages interface (`http://127.0.0.1:1025/html/pages/messages`) to authorized users over the internet via **Cloudflare Tunnel (`cloudflared`)**, enforced by strict route whitelisting and **Argon2id** cryptographic authentication.
 
 > [!IMPORTANT]
 > **No Pre-compiled Binaries on GitHub**: Pre-compiled binary files are intentionally excluded from the Git repository. Before deploying to your target machine, you must compile the binary from source using the instructions below. The compilation produces a **Universal macOS Binary** (`aarch64` + `x86_64`) that runs natively on both Apple Silicon (M1/M2/M3/M4) and Intel Macs on macOS 15 Sequoia.
+
+> [!NOTE]
+> **AI-Assisted Development**: This project was developed with AI assistance using Google DeepMind's **Gemini 3.8 Flash** model via the Antigravity pair-programming agent environment.
 
 ---
 
@@ -63,7 +68,7 @@ Copy the compiled binary (`dist/pro-proxy`) to the target machine (e.g. to `/usr
 ### B. Create Admin Account
 User accounts are managed only by the administrator via CLI. Create your initial admin user:
 ```bash
-./dist/pro-proxy --set-user admin --password "sua_senha_segura"
+./dist/pro-proxy --set-user admin --password "your_secure_password"
 ```
 
 ### C. Run the Server
