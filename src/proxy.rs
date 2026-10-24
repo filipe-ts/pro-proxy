@@ -16,7 +16,7 @@ use std::time::Duration;
 use tracing::{debug, info, warn};
 
 pub const SESSION_COOKIE_NAME: &str = "pm_session";
-pub const SESSION_TTL_SECS: u64 = 86400 * 7; // 7 days
+pub const SESSION_TTL_SECS: u64 = 4 * 3600; // 4 hours
 
 #[derive(Clone)]
 pub struct AppState {
@@ -94,9 +94,10 @@ struct LoginForm {
 async fn handle_login(
     State(state): State<AppState>,
     ConnectInfo(addr): ConnectInfo<SocketAddr>,
+    headers: HeaderMap,
     form: axum::extract::Form<LoginForm>,
 ) -> impl IntoResponse {
-    let ip = addr.ip();
+    let ip = get_client_ip(&headers, addr.ip());
     if !state.login_limiter.check_and_record(ip) {
         warn!("Rate limit exceeded for IP: {ip}");
         return Redirect::to("/login?error=rate_limited").into_response();
@@ -171,7 +172,14 @@ async fn healthz() -> impl IntoResponse {
     (StatusCode::OK, "OK")
 }
 
-pub fn is_whitelisted_route(method: &Method, path: &str, state: &AppState) -> bool {
+pub fn is_whitelisted_route(method: &Method, raw_path: &str, state: &AppState) -> bool {
+    // Percent-decode to catch obfuscated path traversals (%2e%2e, etc.)
+    let decoded = percent_encoding::percent_decode_str(raw_path).decode_utf8_lossy();
+    if decoded.contains("..") || decoded.contains("//") || decoded.contains('\\') {
+        return false;
+    }
+    let path = decoded.as_ref();
+
     if (method == Method::GET || method == Method::HEAD) && path == "/html/pages/messages" {
         return true;
     }
@@ -188,6 +196,22 @@ pub fn is_whitelisted_route(method: &Method, path: &str, state: &AppState) -> bo
         return true;
     }
     false
+}
+
+fn get_client_ip(headers: &HeaderMap, fallback: std::net::IpAddr) -> std::net::IpAddr {
+    if let Some(cf_ip) = headers.get("cf-connecting-ip").and_then(|h| h.to_str().ok()) {
+        if let Ok(ip) = cf_ip.trim().parse() {
+            return ip;
+        }
+    }
+    if let Some(xff) = headers.get("x-forwarded-for").and_then(|h| h.to_str().ok()) {
+        if let Some(first) = xff.split(',').next() {
+            if let Ok(ip) = first.trim().parse() {
+                return ip;
+            }
+        }
+    }
+    fallback
 }
 
 fn extract_session_token(headers: &HeaderMap) -> Option<String> {

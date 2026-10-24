@@ -88,11 +88,14 @@ async fn test_non_whitelisted_routes_are_forbidden() {
     let cookie_header = format!("{SESSION_COOKIE_NAME}={token}");
 
     // Test whitelist function directly
+    assert_eq!(SESSION_TTL_SECS, 4 * 3600);
     assert!(!is_whitelisted_route(&Method::GET, "/v1/control", &state));
     assert!(!is_whitelisted_route(&Method::GET, "/v1/library", &state));
     assert!(!is_whitelisted_route(&Method::GET, "/v1/looks", &state));
     assert!(!is_whitelisted_route(&Method::POST, "/v1/presentation/current", &state));
     assert!(!is_whitelisted_route(&Method::GET, "/v1/status/layers", &state));
+    assert!(!is_whitelisted_route(&Method::GET, "/html/assets/../../v1/control", &state));
+    assert!(!is_whitelisted_route(&Method::GET, "/html/assets/%2e%2e/%2e%2e/v1/control", &state));
 
     // Test via HTTP router
     let blocked_routes = [
@@ -101,6 +104,10 @@ async fn test_non_whitelisted_routes_are_forbidden() {
         "/v1/looks",
         "/v1/presentation/slide_index",
         "/admin/secret",
+        "/html/assets/../../v1/control",
+        "/html/assets/%2e%2e/%2e%2e/v1/control",
+        "/html/assets//evil",
+        "/html/assets\\something",
     ];
 
     for route in blocked_routes {
