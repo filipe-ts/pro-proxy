@@ -164,7 +164,7 @@ The test suite validates:
 1. **Authentication Boundary**: Unauthenticated requests to `/` and `/html/pages/messages` redirect (`302`) to `/login`, and API requests return `401 Unauthorized`.
 2. **Security Whitelist**: Blocked routes (`/v1/control`, `/v1/library`, `/v1/looks`) return `403 Forbidden`.
 3. **Standby Resilience**: Standby page renders properly when the ProPresenter port is unreachable.
-4. **End-to-End Message Submission**: Discovers the network-visible template message, dynamically populates all defined tokens (e.g., `Responsável` + `Criança`), submits them through the authenticated proxy to ProPresenter 7, verifies `204 No Content`, and clears it afterwards.
+4. **End-to-End Message Submission**: Dynamically discovers whatever first message is configured in ProPresenter (prioritizing messages with "Allow Web Notifications" enabled), dynamically inspects all of its arguments/tokens, populates each argument with the word `"Test"` regardless of token name or count, submits the payload through the authenticated proxy to ProPresenter 7, verifies `204 No Content`, and clears it on screen afterwards.
 
 ---
 
@@ -186,3 +186,6 @@ For messages to be accessible via the web interface (`/html/pages/messages`) and
 6. **Enable Web Exposure (Crucial)**: Check the box labeled **"Allow Web Notifications"** (in Portuguese: **"Permitir Notificações Web"**).
    > *ProPresenter only exposes messages to `/html/pages/messages` and `/v1/messages` if this checkbox is enabled.*
 7. **Network Verification**: In ProPresenter's **Settings &rarr; Network**, ensure **"Enable Network"** is active on port `1025`.
+
+> [!NOTE]
+> **Machine-Agnostic Dynamic Testing**: The integration test does not depend on any specific message name or token schema. It dynamically queries ProPresenter, reads the first available message, extracts whatever tokens exist, and populates them with `"Test"`.
