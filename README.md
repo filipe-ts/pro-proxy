@@ -12,6 +12,17 @@
 
 ---
 
+### Why This Project Exists
+
+In many churches and houses of worship where ProPresenter is deployed, local network infrastructure is rarely configured to allow seamless device-to-device communication. Volunteers and ministry staff (such as nursery coordinators, kids ministry leaders, or service directors) frequently encounter connectivity hurdles:
+- Volunteers may only have access to a guest Wi-Fi network that isolates clients and blocks local subnet traffic.
+- The facility's network may be split across multiple subnets or VLANs that do not route to each other.
+- Volunteers in different rooms or annexes might only have mobile cellular data available.
+
+Normally, ProPresenter 7's native Web Messages interface requires being on the exact same local network, and exposing port 1025 directly to the internet is unsafe because it lacks authentication and also exposes full control APIs. **ProProxy** bridges this gap by securely tunneling the messages interface through Cloudflare with strict Argon2id authentication and route whitelisting. Authorized community members can reliably submit message alerts from their phones or tablets over the internet without relying on the building's local network configuration.
+
+---
+
 ## 1. Building the Binary (First Step)
 
 ### Prerequisites (on the build machine)
