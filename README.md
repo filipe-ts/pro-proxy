@@ -19,7 +19,7 @@
   ```bash
   curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
   ```
-- **Cloudflare Tunnel CLI** (for runtime tunnel creation):
+- **[Cloudflare Tunnel CLI (`cloudflared`)](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/)** (installable via [Homebrew](https://brew.sh)):
   ```bash
   brew install cloudflared
   ```
@@ -50,14 +50,14 @@ cargo build --release
 Once built, `dist/pro-proxy` is a **100% self-contained executable**. It embeds the web server, SQLite engine, Argon2 encryption, and HTML UI. It does **NOT** require Rust, Cargo, or the source code on the target machine.
 
 ### Requirement: Cloudflare Tunnel (`cloudflared`)
-To securely expose the application to the internet, **Cloudflare Tunnel (`cloudflared`) is required** on the machine running `pro-proxy`.
+To securely expose the application to the internet, **[Cloudflare Tunnel](https://www.cloudflare.com/products/tunnel/) (`cloudflared`) is required** on the machine running `pro-proxy`.
 
-- **Recommended Installation (via Homebrew)**:
+- **Recommended Installation (via [Homebrew](https://brew.sh))**:
   ```bash
   brew install cloudflared
   ```
 - *Alternative (Manual standalone download without Homebrew)*:
-  Download the standalone binary from Cloudflare's official releases and place it in the same directory as `pro-proxy` or in `/usr/local/bin/cloudflared`.
+  Download the standalone binary from [Cloudflare's Official Releases](https://github.com/cloudflare/cloudflared/releases) and place it in the same directory as `pro-proxy` or in `/usr/local/bin/cloudflared`.
 
 > [!TIP]
 > **macOS Notification Permissions & Alert Style**: On macOS 15 Sequoia, ensure ProPresenter has notifications enabled in **System Settings &rarr; Notifications &rarr; ProPresenter**. It is strongly recommended to set the alert style to **"Alerts"** (instead of "Banners"). Alerts remain visible on screen until dismissed and provide actionable buttons right from the notification popup, allowing the operator to review and approve incoming message requests immediately.
