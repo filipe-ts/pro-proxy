@@ -1,5 +1,8 @@
 # ProProxy
 
+[![English](https://img.shields.io/badge/Language-English-blue?style=flat-square)](README.md)
+[![Português (Brasil)](https://img.shields.io/badge/Idioma-Português_(Brasil)-green?style=flat-square)](README.pt-BR.md)
+
 ### Authenticated Reverse Proxy & Cloudflare Tunnel for ProPresenter 7
 
 **ProProxy** (`pro-proxy`) is an ultra-lightweight, standalone macOS application written in Rust. It securely exposes ProPresenter 7's native Web Messages interface (`http://127.0.0.1:1025/html/pages/messages`) to authorized users over the internet via **Cloudflare Tunnel (`cloudflared`)**, enforced by strict route whitelisting and **Argon2id** cryptographic authentication.
