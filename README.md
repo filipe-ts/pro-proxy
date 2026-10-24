@@ -137,7 +137,7 @@ Logs are automatically written to `~/Library/Logs/pro-proxy.log`.
    - `GET /html/pages/messages`: ProPresenter's native web messages interface.
    - `GET /html/assets/*`: All CSS, JS, fonts, and images required by the page.
    - `GET /v1/messages`: Fetches configured messages list.
-   - `POST /v1/message/:id/trigger`: Sends message tokens (e.g. `Responsável` and `Criança`).
+   - `POST /v1/message/:id/trigger`: Sends message tokens (e.g. `Guardian` and `Child`).
    - `GET /v1/message/:id/clear`: Clears/hides the active message on screen.
    - **Strict Blocking (`403 Forbidden`)**: Any request to non-whitelisted routes (e.g. `/v1/control`, slide triggers, presentation triggers, stage screens) is rejected immediately.
 2. **Argon2id Hashing & Sessions**:
@@ -173,17 +173,16 @@ The test suite validates:
 For messages to be accessible via the web interface (`/html/pages/messages`) and the integration test suite, they must be explicitly exposed in ProPresenter 7:
 
 1. **Open Messages**: In ProPresenter, go to **View &rarr; Messages** (or press `Control + M`, or click the Messages icon in the toolbar).
-2. **Create or Select a Message**: Click the **`+`** button to create a new message (e.g., named `Parent Pickup` or `Berçário`).
+2. **Create or Select a Message**: Click the **`+`** button to create a new message (e.g., named `Parent Pickup`).
 3. **Set the Message Template**: Type the message body using tokens in curly braces, for example:
    ```text
    {Guardian}, please come to the Nursery for {Child}.
    ```
-   *(In Portuguese: `{Responsável} , responsável por {Criança}, favor comparecer ao Berçário.`)*
 4. **Define Tokens**: Click the token button in the editor and add text tokens matching the names in your template:
-   - Token 1: `Guardian` (or `Responsável`)
-   - Token 2: `Child` (or `Criança`)
-5. **Assign a Theme**: Choose an active theme with a text element (e.g., `Alerts` / `Alerta`).
-6. **Enable Web Exposure (Crucial)**: Check the box labeled **"Allow Web Notifications"** (in Portuguese: **"Permitir Notificações Web"**).
+   - Token 1: `Guardian`
+   - Token 2: `Child`
+5. **Assign a Theme**: Choose an active theme with a text element (e.g., `Alerts`).
+6. **Enable Web Exposure (Crucial)**: Check the box labeled **"Allow Web Notifications"**.
    > *ProPresenter only exposes messages to `/html/pages/messages` and `/v1/messages` if this checkbox is enabled.*
 7. **Network Verification**: In ProPresenter's **Settings &rarr; Network**, ensure **"Enable Network"** is active on port `1025`.
 
