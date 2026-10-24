@@ -1,0 +1,32 @@
+[package]
+name = "pro-proxy"
+version = "0.1.0"
+edition = "2021"
+description = "pro-proxy: Authenticated Reverse Proxy for ProPresenter 7"
+
+[dependencies]
+tokio = { version = "1.43", features = ["full"] }
+axum = { version = "0.8", features = ["ws"] }
+axum-extra = { version = "0.10", features = ["cookie"] }
+tower = "0.5"
+tower-http = { version = "0.6", features = ["trace", "cors"] }
+hyper = { version = "1.5", features = ["full"] }
+hyper-util = { version = "0.1", features = ["full"] }
+http-body-util = "0.1"
+reqwest = { version = "0.12", default-features = false, features = ["json", "stream"] }
+rusqlite = { version = "0.33", features = ["bundled"] }
+argon2 = { version = "0.5", features = ["std"] }
+rand = "0.8"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+clap = { version = "4.5", features = ["derive"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+regex = "1.11"
+parking_lot = "0.12"
+tokio-tungstenite = "0.26"
+futures-util = "0.3"
+time = { version = "0.3", features = ["std"] }
+
+[dev-dependencies]
+tempfile = "3.17"
